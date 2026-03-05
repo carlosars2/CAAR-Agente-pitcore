@@ -43,7 +43,7 @@ app.include_router(whatsapp.router, prefix="/api")
 
 @app.on_event("startup")
 async def startup():
-    logger.info("CAAR Agent starting — env=%s, model=%s", settings.app_env, settings.openai_model)
+    logger.info("CAAR Agent starting — env=%s, model=%s", settings.app_env, settings.anthropic_model)
 
 
 @app.on_event("shutdown")

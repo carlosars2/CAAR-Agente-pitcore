@@ -16,7 +16,6 @@ AGENTS = [
         ],
         "result": "Menos mensagens perdidas, mais carros no box.",
         "use_case": "Centro automotivo que perde clientes porque demora para responder WhatsApp ou nao consegue organizar a fila de atendimento.",
-        "package": "starter",
     },
     {
         "id": "orcamento",
@@ -30,7 +29,6 @@ AGENTS = [
         ],
         "result": "Mais agilidade, menos erros e maior conversao.",
         "use_case": "Oficina que demora horas para montar orcamento, ou que perde aprovacao porque o cliente esfria enquanto espera.",
-        "package": "starter",
     },
     {
         "id": "cobranca",
@@ -44,7 +42,6 @@ AGENTS = [
         ],
         "result": "Melhora do fluxo de caixa e menos tempo cobrando clientes.",
         "use_case": "Centro que tem dinheiro a receber mas nao cobra de forma sistematica, ou que perde a relacao com o cliente por cobrar de forma inadequada.",
-        "package": "pro",
     },
     {
         "id": "gestao",
@@ -58,7 +55,6 @@ AGENTS = [
         ],
         "result": "Decisoes mais rapidas e menos prejuizos invisiveis.",
         "use_case": "Dono de oficina que nao tem visibilidade clara dos numeros e toma decisoes no feeling.",
-        "package": "pro",
     },
     {
         "id": "estoque",
@@ -72,7 +68,6 @@ AGENTS = [
         ],
         "result": "Menos emergencia, menos desperdicio e melhor margem.",
         "use_case": "Oficina que para servico por falta de peca, ou que tem capital empatado em estoque parado.",
-        "package": "pro",
     },
     {
         "id": "margem",
@@ -86,7 +81,6 @@ AGENTS = [
         ],
         "result": "Ajuste estrategico de precos e aumento consistente de lucro.",
         "use_case": "Centro que fatura bem mas nao sabe exatamente onde ganha e onde perde dinheiro em cada servico.",
-        "package": "enterprise",
     },
     {
         "id": "garantia",
@@ -100,73 +94,16 @@ AGENTS = [
         ],
         "result": "Menos custo oculto e mais controle de qualidade.",
         "use_case": "Oficina que tem retrabalho frequente e nao consegue identificar se o problema e peca, tecnico ou processo.",
-        "package": "enterprise",
     },
 ]
 
-PACKAGES = [
-    {
-        "id": "starter",
-        "name": "Starter",
-        "price_monthly": 497,
-        "currency": "BRL",
-        "max_agents": 2,
-        "included_agents": ["atendimento", "orcamento"],
-        "highlights": [
-            "2 agentes de IA a sua escolha",
-            "Integracao com WhatsApp",
-            "Painel de acompanhamento",
-            "Suporte por chat",
-        ],
-        "ideal_for": "Centros automotivos que querem comecar com automacao pontual e resultado rapido.",
-        "cta": "Comecar com Starter",
-    },
-    {
-        "id": "pro",
-        "name": "Pro",
-        "price_monthly": 1297,
-        "currency": "BRL",
-        "max_agents": 5,
-        "included_agents": ["atendimento", "orcamento", "cobranca", "gestao", "estoque"],
-        "highlights": [
-            "5 agentes de IA",
-            "Integracao com WhatsApp + sistemas existentes",
-            "Dashboards avancados",
-            "Suporte prioritario",
-            "Relatorios semanais automaticos",
-        ],
-        "recommended": True,
-        "ideal_for": "Centros que querem automacao completa da operacao sem trocar de sistema.",
-        "cta": "Assinar Pro",
-    },
-    {
-        "id": "enterprise",
-        "name": "Enterprise",
-        "price_monthly": None,  # Sob consulta
-        "currency": "BRL",
-        "max_agents": 7,
-        "included_agents": [
-            "atendimento", "orcamento", "cobranca",
-            "gestao", "estoque", "margem", "garantia",
-        ],
-        "highlights": [
-            "Todos os 7 agentes de IA",
-            "Customizacao completa",
-            "Gerente de conta dedicado",
-            "Treinamento da equipe",
-            "SLA prioritario",
-            "Integracoes sob medida",
-        ],
-        "ideal_for": "Redes, franquias ou centros de grande porte que precisam de solucao completa e personalizada.",
-        "cta": "Falar com especialista",
-    },
-]
+# Nao existem pacotes pre-definidos. Cada solucao e montada sob medida
+# com os agentes mais adequados para o caso do cliente.
+# A combinacao e definida na consulta com especialista.
 
 BUILD_SOB_MEDIDA = {
     "name": "Build Sob Medida",
-    "description": "Sistema 100% customizado para seu centro automotivo. Projetado do zero para o fluxo real do seu negocio.",
-    "price_build_range": {"min": 25000, "max": 180000, "currency": "BRL"},
-    "price_monthly_range": {"min": 890, "max": 4500, "currency": "BRL"},
+    "description": "Sistema 100% customizado para seu centro automotivo. Projetado do zero para o fluxo real do seu negocio. Valores definidos na consulta com especialista.",
     "project_types": [
         {"id": "crm", "name": "CRM & Vendas", "description": "Funil de vendas, precificacao inteligente, planos recorrentes, historico do cliente."},
         {"id": "operacao", "name": "Operacao", "description": "Ordens de servico inteligentes, checklists, aprovacao digital, timeline do veiculo."},
@@ -190,15 +127,8 @@ BUILD_SOB_MEDIDA = {
 
 COOPERATIVE_MODEL = {
     "name": "Modelo Cooperativo",
-    "description": "Grupos de centros automotivos compartilham o custo de desenvolvimento, reduzindo significativamente o investimento individual.",
-    "base_monthly": 590,
-    "currency": "BRL",
+    "description": "Grupos de centros automotivos compartilham o custo de desenvolvimento, reduzindo significativamente o investimento individual. Quanto mais membros, maior o desconto. Valores definidos na consulta.",
     "max_members": 10,
-    "discount_tiers": [
-        {"min_members": 2, "max_members": 3, "discount_percent": 15},
-        {"min_members": 4, "max_members": 6, "discount_percent": 25},
-        {"min_members": 7, "max_members": 10, "discount_percent": 35},
-    ],
     "rules": [
         "Funcionalidades core sao compartilhadas entre o grupo",
         "Funcionalidades exclusivas sao add-on pago",
@@ -210,7 +140,7 @@ COOPERATIVE_MODEL = {
 MONETIZE_PROGRAM = {
     "name": "Programa Monetize seu Sistema",
     "description": "Transforme o sistema que voce construiu com a Pitcore em uma solucao comercializavel para outros centros automotivos.",
-    "revenue_share": {"partner_percent": 70, "pitcore_percent": 30},
+    "revenue_share": "Percentuais definidos contratualmente na consulta com especialista.",
     "eligibility_criteria": [
         "Resultados mensuraveis e documentados",
         "Arquitetura modular que permite replicacao",
@@ -298,22 +228,17 @@ def get_knowledge_base_text() -> str:
         lines.append(f"Caso de uso: {agent['use_case']}")
         lines.append("")
 
-    # Packages
-    lines.append("## PACOTES E PRECOS\n")
-    for pkg in PACKAGES:
-        price = f"R${pkg['price_monthly']}/mes" if pkg["price_monthly"] else "Sob consulta"
-        lines.append(f"### {pkg['name']} — {price}")
-        lines.append(f"Ate {pkg['max_agents']} agentes")
-        for h in pkg["highlights"]:
-            lines.append(f"  - {h}")
-        lines.append(f"Ideal para: {pkg['ideal_for']}")
-        lines.append("")
+    # Solution model
+    lines.append("## MODELO DE SOLUCAO\n")
+    lines.append("Nao existem pacotes pre-definidos. Cada solucao e montada sob medida")
+    lines.append("com a combinacao de agentes mais adequada para o caso do cliente.")
+    lines.append("A definicao e feita na consulta gratuita com especialista.")
+    lines.append("")
 
     # Build
-    lines.append("## BUILD SOB MEDIDA\n")
+    lines.append("## BUILD SOB MEDIDA (valores sob consulta)\n")
     b = BUILD_SOB_MEDIDA
-    lines.append(f"Investimento: R${b['price_build_range']['min']:,}-R${b['price_build_range']['max']:,} (build)")
-    lines.append(f"Mensal: R${b['price_monthly_range']['min']:,}-R${b['price_monthly_range']['max']:,}/mes (suporte)")
+    lines.append(b["description"])
     lines.append("\nTipos de projeto:")
     for pt in b["project_types"]:
         lines.append(f"  - {pt['name']}: {pt['description']}")
@@ -326,14 +251,15 @@ def get_knowledge_base_text() -> str:
     # Cooperative
     lines.append("## MODELO COOPERATIVO\n")
     c = COOPERATIVE_MODEL
-    for tier in c["discount_tiers"]:
-        lines.append(f"  - {tier['min_members']}-{tier['max_members']} membros: {tier['discount_percent']}% de desconto")
+    lines.append(c["description"])
+    lines.append(f"Maximo de membros: {c['max_members']}")
     lines.append("")
 
     # Monetize
     lines.append("## PROGRAMA MONETIZE SEU SISTEMA\n")
     m = MONETIZE_PROGRAM
-    lines.append(f"Revenue share: parceiro {m['revenue_share']['partner_percent']}% / Pitcore {m['revenue_share']['pitcore_percent']}%")
+    lines.append(m["description"])
+    lines.append(f"Participacao: {m['revenue_share']}")
     lines.append("Criterios de elegibilidade:")
     for cr in m["eligibility_criteria"]:
         lines.append(f"  - {cr}")

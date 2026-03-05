@@ -7,7 +7,7 @@ Funciona como primeiro ponto de contato no site e via WhatsApp.
 
 - **Python 3.11** + **FastAPI** (API gateway)
 - **LangChain + LangGraph** (orquestracao do agente)
-- **OpenAI GPT-4o** (LLM)
+- **Claude Sonnet 4.6** via Anthropic API (LLM)
 - **Redis** (memoria de conversa)
 - **Evolution API** (WhatsApp self-hosted)
 
@@ -20,7 +20,7 @@ cd CAAR-Agente-pitcore
 
 # 2. Configurar
 cp .env.example .env
-# Editar .env com suas chaves (OPENAI_API_KEY, EVOLUTION_API_KEY, etc.)
+# Editar .env com suas chaves (ANTHROPIC_API_KEY, EVOLUTION_API_KEY, etc.)
 
 # 3. Rodar com Docker
 docker compose -f docker/docker-compose.prod.yml up -d

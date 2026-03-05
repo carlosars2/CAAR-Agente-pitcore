@@ -9,10 +9,7 @@ from langchain_core.tools import tool
 from src.agent.prompts.knowledge_base import (
     AGENTS,
     BUILD_SOB_MEDIDA,
-    COOPERATIVE_MODEL,
     DEMO_CONFIG,
-    MONETIZE_PROGRAM,
-    PACKAGES,
 )
 from src.config.settings import settings
 from src.memory.redis_memory import memory
@@ -191,16 +188,17 @@ async def escalate_to_human(
 
 
 @tool
-def recommend_package(
+def recommend_solution(
     employees: str = "",
     monthly_orders: str = "",
     main_pain: str = "",
     has_existing_system: bool = True,
     wants_complete_solution: bool = False,
 ) -> str:
-    """Analyze the customer profile and recommend the best Pitcore solution.
+    """Analyze the customer profile and recommend the best Pitcore solution line.
 
-    Use this after gathering qualification data to make a data-driven recommendation.
+    Use this after gathering qualification data to decide between AI Agents or Build Sob Medida.
+    NEVER mention packages, plans, or pricing — every solution is custom.
 
     Args:
         employees: Approximate number of employees.
@@ -218,60 +216,43 @@ def recommend_package(
     except ValueError:
         orders = 0
 
-    # Decision logic
+    # Decision: Build Sob Medida
     if wants_complete_solution or not has_existing_system or emp > 30 or orders > 500:
-        # Recommend Build Sob Medida
-        b = BUILD_SOB_MEDIDA
         return (
-            f"RECOMENDACAO: Build Sob Medida\n"
-            f"Motivo: Perfil indica necessidade de sistema completo e integrado.\n"
-            f"Investimento: R${b['price_build_range']['min']:,}-R${b['price_build_range']['max']:,} (desenvolvimento)\n"
-            f"Mensal: R${b['price_monthly_range']['min']:,}-R${b['price_monthly_range']['max']:,}/mes\n"
-            f"Diferencial: 5 primeiras etapas GRATUITAS, demo de 7 dias sem compromisso.\n"
-            f"Proximo passo: Convidar para iniciar o diagnostico gratuito no portal."
+            "RECOMENDACAO: Build Sob Medida\n"
+            "Motivo: Perfil indica necessidade de sistema completo e integrado.\n"
+            "Diferencial: 5 primeiras etapas GRATUITAS, demo de 7 dias sem compromisso.\n"
+            "Proximo passo: Convidar para iniciar o diagnostico gratuito no portal ou agendar consulta.\n"
+            "IMPORTANTE: Nao mencione precos ou pacotes. Valores definidos na consulta."
         )
 
-    # Agent Overlay recommendation
-    if emp > 15 or orders > 200:
-        pkg = PACKAGES[2]  # Enterprise
-        return (
-            f"RECOMENDACAO: Agent Overlay — {pkg['name']}\n"
-            f"Motivo: Operacao de grande porte precisa de automacao completa.\n"
-            f"Preco: Sob consulta (todos os 7 agentes + customizacao)\n"
-            f"Diferencial: Gerente de conta dedicado, treinamento da equipe.\n"
-            f"Proximo passo: Agendar consulta com especialista."
-        )
-
-    if emp > 5 or orders > 80:
-        pkg = PACKAGES[1]  # Pro
-        return (
-            f"RECOMENDACAO: Agent Overlay — {pkg['name']}\n"
-            f"Motivo: Operacao media se beneficia de automacao integrada.\n"
-            f"Preco: R${pkg['price_monthly']}/mes (5 agentes)\n"
-            f"Agentes sugeridos: Atendimento, Orcamento, Cobranca, Gestao, Estoque.\n"
-            f"Diferencial: Demo gratuita de 7 dias, sem cartao.\n"
-            f"Proximo passo: Oferecer demo ou agendar consulta."
-        )
-
-    pkg = PACKAGES[0]  # Starter
+    # Decision: AI Agents — suggest relevant agents based on pain
     pain_lower = main_pain.lower() if main_pain else ""
-    suggested_agents = []
-    if any(w in pain_lower for w in ["atendimento", "whatsapp", "mensagem", "cliente"]):
-        suggested_agents.append("Atendimento")
-    if any(w in pain_lower for w in ["orcamento", "preco", "aprovacao"]):
-        suggested_agents.append("Orcamento")
-    if any(w in pain_lower for w in ["cobranca", "inadimplencia", "pagamento"]):
-        suggested_agents.append("Cobranca")
-    if not suggested_agents:
-        suggested_agents = ["Atendimento", "Orcamento"]
+    suggested = []
+    if any(w in pain_lower for w in ["atendimento", "whatsapp", "mensagem", "cliente", "agenda"]):
+        suggested.append("Atendimento")
+    if any(w in pain_lower for w in ["orcamento", "preco", "aprovacao", "demora"]):
+        suggested.append("Orcamento")
+    if any(w in pain_lower for w in ["cobranca", "inadimplencia", "pagamento", "devendo"]):
+        suggested.append("Cobranca")
+    if any(w in pain_lower for w in ["gestao", "numero", "kpi", "controle", "dado"]):
+        suggested.append("Gestao")
+    if any(w in pain_lower for w in ["estoque", "peca", "falta", "compra"]):
+        suggested.append("Estoque")
+    if any(w in pain_lower for w in ["margem", "lucro", "rentabilidade", "prejuizo"]):
+        suggested.append("Margem")
+    if any(w in pain_lower for w in ["garantia", "retrabalho", "qualidade", "retorno"]):
+        suggested.append("Garantia")
+    if not suggested:
+        suggested = ["Atendimento", "Orcamento"]
 
     return (
-        f"RECOMENDACAO: Agent Overlay — {pkg['name']}\n"
-        f"Motivo: Ponto de entrada ideal para comecar com automacao.\n"
-        f"Preco: R${pkg['price_monthly']}/mes (2 agentes)\n"
-        f"Agentes sugeridos: {', '.join(suggested_agents[:2])}.\n"
-        f"Diferencial: Resultado rapido, sem trocar sistema, demo gratuita de 7 dias.\n"
-        f"Proximo passo: Oferecer demo gratuita."
+        "RECOMENDACAO: Agentes de IA\n"
+        f"Agentes sugeridos para a dor do cliente: {', '.join(suggested)}.\n"
+        "Motivo: Resultado rapido, sem trocar sistema, conecta aos sistemas atuais.\n"
+        "Diferencial: Demo gratuita de 7 dias, sem cartao.\n"
+        "Proximo passo: Oferecer demo gratuita ou agendar consulta com especialista.\n"
+        "IMPORTANTE: Nao mencione precos, pacotes ou planos. A combinacao ideal de agentes e definida na consulta."
     )
 
 
@@ -288,15 +269,13 @@ def get_agent_details(agent_id: str) -> str:
     for agent in AGENTS:
         if agent["id"] == agent_id_lower or agent_id_lower in agent["name"].lower():
             features = "\n".join(f"  - {f}" for f in agent["features"])
-            pkg = next((p for p in PACKAGES if agent["id"] in p["included_agents"]), None)
-            availability = f"Disponivel nos pacotes: {pkg['name']}+" if pkg else "Disponivel no Enterprise"
             return (
                 f"**{agent['name']}**\n\n"
                 f"{agent['description']}\n\n"
                 f"Funcionalidades:\n{features}\n\n"
                 f"Resultado esperado: {agent['result']}\n\n"
                 f"Caso de uso tipico: {agent['use_case']}\n\n"
-                f"{availability}"
+                f"Disponivel como parte da solucao personalizada — definida na consulta com especialista."
             )
 
     available = ", ".join(a["name"] for a in AGENTS)
@@ -367,7 +346,7 @@ ALL_TOOLS = [
     capture_lead,
     schedule_consultation,
     escalate_to_human,
-    recommend_package,
+    recommend_solution,
     get_agent_details,
     send_summary,
 ]

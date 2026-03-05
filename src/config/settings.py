@@ -4,10 +4,10 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # OpenAI
-    openai_api_key: str = ""
-    openai_model: str = "gpt-4o"
-    openai_temperature: float = 0.3
+    # Anthropic (Claude)
+    anthropic_api_key: str = ""
+    anthropic_model: str = "claude-sonnet-4-6"
+    anthropic_temperature: float = 0.3
 
     # Redis
     redis_url: str = "redis://localhost:6379/1"

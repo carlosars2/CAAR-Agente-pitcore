@@ -3,7 +3,7 @@
 import logging
 from functools import partial
 
-from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langgraph.graph import END, StateGraph
 
 from src.agent.nodes import (
@@ -31,10 +31,11 @@ def create_graph():
     Once the agent produces a final text response, save to memory and finish.
     """
     # Initialize LLM with tools
-    llm = ChatOpenAI(
-        model=settings.openai_model,
-        temperature=settings.openai_temperature,
-        api_key=settings.openai_api_key,
+    llm = ChatAnthropic(
+        model=settings.anthropic_model,
+        temperature=settings.anthropic_temperature,
+        api_key=settings.anthropic_api_key,
+        max_tokens=1024,
     ).bind_tools(ALL_TOOLS)
 
     # Create the graph
