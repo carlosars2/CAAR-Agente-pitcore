@@ -1,5 +1,5 @@
 """
-Test script — conversa com o CAAR direto no terminal.
+Test script — conversa com o Pitcore direto no terminal.
 Nao precisa de Redis, Docker ou FastAPI rodando.
 
 Uso:
@@ -37,7 +37,7 @@ async def main():
     messages = [system]
 
     print("=" * 50)
-    print("  CAAR — Pitcore & Systems (Claude)")
+    print("  Pitcore Agent — Pitcore & Systems (Claude)")
     print("  Digite sua mensagem (ou 'sair' para encerrar)")
     print("=" * 50)
     print()
@@ -80,9 +80,9 @@ async def main():
 
         # Print the final response
         if response.content:
-            print(f"\nCAAR: {response.content}\n")
+            print(f"\nPitcore: {response.content}\n")
         else:
-            print("\nCAAR: [sem resposta textual]\n")
+            print("\nPitcore: [sem resposta textual]\n")
 
 
 if __name__ == "__main__":

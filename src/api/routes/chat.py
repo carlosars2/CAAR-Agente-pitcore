@@ -16,7 +16,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 @router.post("/message", response_model=ChatResponse)
 async def send_message(request: ChatRequest):
-    """REST endpoint: receive a message, process through CAAR, return response."""
+    """REST endpoint: receive a message, process through Pitcore, return response."""
     conversation_id = request.conversation_id or str(uuid.uuid4())
 
     response_text = await process_message(

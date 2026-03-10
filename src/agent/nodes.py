@@ -1,4 +1,4 @@
-"""LangGraph node functions for the CAAR agent."""
+"""LangGraph node functions for the Pitcore agent."""
 
 import logging
 

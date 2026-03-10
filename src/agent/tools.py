@@ -1,4 +1,4 @@
-"""LangChain tools available to the CAAR agent."""
+"""LangChain tools available to the Pitcore agent."""
 
 import json
 import logging
@@ -15,6 +15,27 @@ from src.config.settings import settings
 from src.memory.redis_memory import memory
 
 logger = logging.getLogger(__name__)
+
+
+async def _send_uazapi_message(phone: str, text: str) -> None:
+    """Send a WhatsApp message via UAZAPI."""
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{settings.uazapi_base_url}/send/text",
+                headers={
+                    "token": settings.uazapi_token,
+                    "Content-Type": "application/json",
+                },
+                json={"number": phone, "text": text},
+                timeout=15,
+            )
+            if resp.status_code != 200:
+                logger.error("UAZAPI error %s: %s", resp.status_code, resp.text)
+            else:
+                logger.info("UAZAPI message sent to %s", phone)
+    except Exception as e:
+        logger.error("Failed to send UAZAPI message: %s", e)
 
 
 @tool
@@ -93,7 +114,7 @@ async def schedule_consultation(
         return "Consulta registrada. Nossa equipe entrara em contato em breve."
 
     message = (
-        f"*Nova Consulta Agendada via CAAR*\n\n"
+        f"*Nova Consulta Agendada via Pitcore*\n\n"
         f"Cliente: {lead_name}\n"
         f"Telefone: {lead_phone}\n"
     )
@@ -105,19 +126,7 @@ async def schedule_consultation(
         message += f"Observacoes: {notes}\n"
     message += f"\nConversa: {conversation_id}"
 
-    try:
-        async with httpx.AsyncClient() as client:
-            await client.post(
-                f"{settings.evolution_api_url}/message/sendText/{settings.evolution_instance}",
-                headers={"apikey": settings.evolution_api_key},
-                json={
-                    "number": settings.escalation_whatsapp,
-                    "text": message,
-                },
-                timeout=10,
-            )
-    except Exception as e:
-        logger.error("Failed to notify team: %s", e)
+    await _send_uazapi_message(settings.escalation_whatsapp, message)
 
     await memory.save_lead(conversation_id, {
         "consultation_requested": True,
@@ -141,7 +150,7 @@ async def escalate_to_human(
     - Price negotiation or custom discount request
     - Legal or contractual questions
     - Customer is frustrated or unhappy
-    - Issue is outside CAAR's scope
+    - Issue is outside Pitcore's scope
 
     Args:
         conversation_id: The current conversation ID.
@@ -153,7 +162,7 @@ async def escalate_to_human(
         return "Transferencia solicitada. Um consultor entrara em contato em breve."
 
     message = (
-        f"*Escalacao CAAR → Humano*\n\n"
+        f"*Escalacao Pitcore → Humano*\n\n"
         f"Motivo: {reason}\n"
         f"Conversa: {conversation_id}\n"
     )
@@ -165,24 +174,12 @@ async def escalate_to_human(
     if history:
         last_msgs = history[-6:]  # Last 3 exchanges
         summary = "\n".join(
-            f"{'Cliente' if m['role'] == 'user' else 'CAAR'}: {m['content'][:100]}"
+            f"{'Cliente' if m['role'] == 'user' else 'Pitcore'}: {m['content'][:100]}"
             for m in last_msgs
         )
         message += f"\nUltimas mensagens:\n{summary}"
 
-    try:
-        async with httpx.AsyncClient() as client:
-            await client.post(
-                f"{settings.evolution_api_url}/message/sendText/{settings.evolution_instance}",
-                headers={"apikey": settings.evolution_api_key},
-                json={
-                    "number": settings.escalation_whatsapp,
-                    "text": message,
-                },
-                timeout=10,
-            )
-    except Exception as e:
-        logger.error("Failed to escalate: %s", e)
+    await _send_uazapi_message(settings.escalation_whatsapp, message)
 
     return "Conversa transferida para um consultor humano. Ele entrara em contato em breve."
 
@@ -324,15 +321,9 @@ async def send_summary(
 
     summary_text = "\n".join(summary_parts)
 
-    if phone and settings.evolution_api_key:
+    if phone and settings.uazapi_token:
         try:
-            async with httpx.AsyncClient() as client:
-                await client.post(
-                    f"{settings.evolution_api_url}/message/sendText/{settings.evolution_instance}",
-                    headers={"apikey": settings.evolution_api_key},
-                    json={"number": phone, "text": summary_text},
-                    timeout=10,
-                )
+            await _send_uazapi_message(phone, summary_text)
             return f"Resumo enviado para {phone} via WhatsApp."
         except Exception as e:
             logger.error("Failed to send summary: %s", e)

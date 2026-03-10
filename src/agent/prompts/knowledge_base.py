@@ -1,5 +1,5 @@
 """
-CAAR Agent - Knowledge Base
+Pitcore Agent - Knowledge Base
 Structured product data for the Pitcore & Systems AI agent.
 """
 

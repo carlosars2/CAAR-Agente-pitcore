@@ -16,8 +16,8 @@ COPY src/ src/
 COPY widget/ widget/
 
 # Non-root user
-RUN useradd -m caar && chown -R caar:caar /app
-USER caar
+RUN useradd -m pitcore && chown -R pitcore:pitcore /app
+USER pitcore
 
 EXPOSE 8000
 

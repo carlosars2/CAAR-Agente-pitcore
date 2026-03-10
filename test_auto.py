@@ -1,4 +1,4 @@
-"""Automated test — sends a few messages and prints the CAAR responses."""
+"""Automated test — sends a few messages and prints the Pitcore responses."""
 
 import asyncio
 import os
@@ -77,7 +77,7 @@ async def main():
     messages = [system]
 
     print("=" * 60)
-    print("  TESTE AUTOMATICO — CAAR Agent (Claude)")
+    print("  TESTE AUTOMATICO — Pitcore Agent (Claude)")
     print("=" * 60)
 
     for i, user_msg in enumerate(TEST_MESSAGES, 1):
@@ -86,7 +86,7 @@ async def main():
 
         try:
             response = await run_agent(messages, user_msg)
-            print(f"\nCAAR: {response}")
+            print(f"\nPitcore: {response}")
         except Exception as e:
             print(f"\nERRO: {e}")
             break

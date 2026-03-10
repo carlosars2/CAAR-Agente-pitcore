@@ -1,4 +1,4 @@
-"""LangGraph state machine for the CAAR agent."""
+"""LangGraph state machine for the Pitcore agent."""
 
 import logging
 from functools import partial
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_graph():
-    """Build and compile the CAAR agent graph.
+    """Build and compile the Pitcore agent graph.
 
     Graph flow:
         start → agent → (tools → agent)* → save → end
@@ -69,7 +69,7 @@ def create_graph():
 
 
 # Compiled graph singleton
-caar_graph = create_graph()
+pitcore_graph = create_graph()
 
 
 async def process_message(
@@ -77,7 +77,7 @@ async def process_message(
     user_message: str,
     channel: str = "website",
 ) -> str:
-    """Process a user message through the CAAR agent graph.
+    """Process a user message through the Pitcore agent graph.
 
     Args:
         conversation_id: Unique conversation identifier.
@@ -127,7 +127,7 @@ async def process_message(
         "escalation_reason": "",
     }
 
-    result = await caar_graph.ainvoke(initial_state)
+    result = await pitcore_graph.ainvoke(initial_state)
 
     # Extract the last AI message
     for msg in reversed(result["messages"]):

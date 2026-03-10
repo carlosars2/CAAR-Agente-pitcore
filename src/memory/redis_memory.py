@@ -24,10 +24,10 @@ class RedisMemory:
         return self._redis
 
     def _key(self, conversation_id: str) -> str:
-        return f"caar:conv:{conversation_id}"
+        return f"pitcore:conv:{conversation_id}"
 
     def _lead_key(self, conversation_id: str) -> str:
-        return f"caar:lead:{conversation_id}"
+        return f"pitcore:lead:{conversation_id}"
 
     async def get_history(self, conversation_id: str) -> list[dict]:
         """Retrieve conversation history."""

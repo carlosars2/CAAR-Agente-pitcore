@@ -1,4 +1,4 @@
-"""FastAPI application — CAAR Agent API gateway."""
+"""FastAPI application — Pitcore Agent API gateway."""
 
 import logging
 
@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="CAAR Agent API",
+    title="Pitcore Agent API",
     description="Agente de IA da Pitcore & Systems — atendimento inteligente para centros automotivos.",
     version="1.0.0",
     docs_url="/docs" if settings.app_env != "production" else None,
@@ -43,13 +43,13 @@ app.include_router(whatsapp.router, prefix="/api")
 
 @app.on_event("startup")
 async def startup():
-    logger.info("CAAR Agent starting — env=%s, model=%s", settings.app_env, settings.anthropic_model)
+    logger.info("Pitcore Agent starting — env=%s, model=%s", settings.app_env, settings.anthropic_model)
 
 
 @app.on_event("shutdown")
 async def shutdown():
     await memory.close()
-    logger.info("CAAR Agent shutdown complete")
+    logger.info("Pitcore Agent shutdown complete")
 
 
 if __name__ == "__main__":

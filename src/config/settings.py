@@ -12,10 +12,9 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = "redis://localhost:6379/1"
 
-    # Evolution API (WhatsApp)
-    evolution_api_url: str = "http://localhost:8080"
-    evolution_api_key: str = ""
-    evolution_instance: str = "pitcore-whatsapp"
+    # UAZAPI (WhatsApp)
+    uazapi_base_url: str = "https://pitcore.uazapi.com"
+    uazapi_token: str = ""
 
     # Application
     app_host: str = "0.0.0.0"
