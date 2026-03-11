@@ -83,6 +83,12 @@ async def capture_lead(
         return "Nenhuma informacao de lead fornecida."
 
     await memory.save_lead(conversation_id, lead_data)
+
+    # Also persist to permanent contact profile (keyed by phone)
+    phone = phone or conversation_id.replace("wa:", "")
+    if phone:
+        await memory.save_contact(phone, lead_data)
+
     logger.info("Lead captured for %s: %s", conversation_id, list(lead_data.keys()))
     return f"Lead salvo com sucesso: {', '.join(lead_data.keys())}"
 

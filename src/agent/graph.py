@@ -94,8 +94,42 @@ async def process_message(
     # Load conversation history from Redis
     history = await memory.get_history(conversation_id)
 
+    # Load persistent contact profile (if returning customer)
+    phone = conversation_id.replace("wa:", "")
+    contact = await memory.get_contact(phone) if phone else None
+
     # Build messages list
-    messages = [build_system_message()]
+    system_msg = build_system_message()
+    if contact:
+        context_parts = ["\n\n# CONTEXTO DO CONTATO (cliente que ja conversou antes)\n"]
+        if contact.get("name"):
+            context_parts.append(f"- Nome: {contact['name']}")
+        if contact.get("company_name"):
+            context_parts.append(f"- Empresa: {contact['company_name']}")
+        if contact.get("specialty"):
+            context_parts.append(f"- Especialidade: {contact['specialty']}")
+        if contact.get("employees"):
+            context_parts.append(f"- Funcionarios: {contact['employees']}")
+        if contact.get("main_pain"):
+            context_parts.append(f"- Dor principal: {contact['main_pain']}")
+        if contact.get("interest"):
+            context_parts.append(f"- Interesse: {contact['interest']}")
+        if contact.get("email"):
+            context_parts.append(f"- Email: {contact['email']}")
+        if contact.get("interactions"):
+            context_parts.append(f"- Interacoes anteriores: {contact['interactions']}")
+        if contact.get("first_contact"):
+            context_parts.append(f"- Primeiro contato: {contact['first_contact']}")
+        if contact.get("consultation_requested"):
+            context_parts.append("- Ja solicitou consulta com especialista")
+        context_parts.append("\nIMPORTANTE: Use estas informacoes para personalizar o atendimento. "
+                            "NAO repita perguntas que ja foram respondidas. "
+                            "Cumprimente pelo nome se disponivel. "
+                            "Retome de onde a conversa parou.")
+        from langchain_core.messages import SystemMessage
+        system_msg = SystemMessage(content=system_msg.content + "\n".join(context_parts))
+
+    messages = [system_msg]
     for msg in history:
         if msg["role"] == "user":
             messages.append(HumanMessage(content=msg["content"]))

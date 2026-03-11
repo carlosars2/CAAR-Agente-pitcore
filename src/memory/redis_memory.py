@@ -29,6 +29,9 @@ class RedisMemory:
     def _lead_key(self, conversation_id: str) -> str:
         return f"pitcore:lead:{conversation_id}"
 
+    def _contact_key(self, phone: str) -> str:
+        return f"pitcore:contact:{phone}"
+
     async def get_history(self, conversation_id: str) -> list[dict]:
         """Retrieve conversation history."""
         r = await self._get_redis()
@@ -67,6 +70,26 @@ class RedisMemory:
         """Retrieve lead data for a conversation."""
         r = await self._get_redis()
         raw = await r.get(self._lead_key(conversation_id))
+        if raw is None:
+            return None
+        return json.loads(raw)
+
+    async def save_contact(self, phone: str, data: dict) -> None:
+        """Save persistent contact profile (no TTL — survives across sessions)."""
+        r = await self._get_redis()
+        key = self._contact_key(phone)
+        existing = await r.get(key)
+        merged = json.loads(existing) if existing else {"first_contact": datetime.utcnow().isoformat()}
+        merged.update(data)
+        merged["last_seen"] = datetime.utcnow().isoformat()
+        # Increment interaction count
+        merged["interactions"] = merged.get("interactions", 0) + 1
+        await r.set(key, json.dumps(merged, ensure_ascii=False))  # No TTL
+
+    async def get_contact(self, phone: str) -> dict | None:
+        """Retrieve persistent contact profile."""
+        r = await self._get_redis()
+        raw = await r.get(self._contact_key(phone))
         if raw is None:
             return None
         return json.loads(raw)

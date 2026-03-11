@@ -62,6 +62,11 @@ async def save_messages_node(state: dict) -> dict:
         elif role in ("ai", "assistant") and msg.content:
             await memory.append_message(conversation_id, "assistant", msg.content)
 
+    # Update persistent contact profile (track last interaction)
+    phone = conversation_id.replace("wa:", "")
+    if phone:
+        await memory.save_contact(phone, {"channel": state.get("channel", "website")})
+
     return state
 
 
