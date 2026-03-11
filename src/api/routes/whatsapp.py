@@ -50,10 +50,20 @@ async def uazapi_webhook(request: Request):
     if msg.get("isGroup", False):
         return {"status": "ignored", "reason": "group_message"}
 
-    # Only process text messages
+    # For non-text messages (audio, image, etc.), route through agent with a hint
     msg_type = msg.get("type", "")
-    if msg_type and msg_type != "text":
+    media_type = msg.get("mediaType", "")
+    message_type = msg.get("messageType", "")
+    is_audio = msg_type == "audio" or media_type == "audio" or "Audio" in message_type
+    is_media = msg_type and msg_type != "text" and not is_audio
+
+    if is_media:
         return {"status": "ignored", "reason": f"unsupported_type:{msg_type}"}
+
+    if is_audio:
+        # Inject a synthetic text so the agent can respond humorously
+        msg["text"] = "[CLIENTE ENVIOU UM AUDIO]"
+        msg["type"] = "text"
 
     # Return 200 immediately, process in background
     asyncio.create_task(_process_webhook(payload))
