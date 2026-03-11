@@ -62,7 +62,7 @@ async def capture_lead(
         email: Customer's email.
         company_name: Name of the automotive center.
         specialty: Type of automotive specialty.
-        interest: What they're interested in (agent_overlay, build, cooperative, monetize).
+        interest: What they're interested in (agent_overlay, build, partnership, monetize).
         main_pain: Their main challenge or pain point.
     """
     lead_data = {
@@ -314,7 +314,7 @@ async def send_summary(
             interest_map = {
                 "agent_overlay": "Agentes de IA (Agent Overlay)",
                 "build": "Build Sob Medida",
-                "cooperative": "Modelo Cooperativo",
+                "partnership": "Programa de Parcerias",
                 "monetize": "Programa Monetize",
             }
             summary_parts.append(f"Interesse: {interest_map.get(lead['interest'], lead['interest'])}")

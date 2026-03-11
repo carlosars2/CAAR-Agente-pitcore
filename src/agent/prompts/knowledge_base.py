@@ -119,28 +119,59 @@ BUILD_SOB_MEDIDA = {
         {"step": 2, "name": "Perfil da empresa", "description": "Informacoes do centro automotivo.", "free": True},
         {"step": 3, "name": "Diagnostico completo", "description": "Questionario detalhado + especificacao tecnica + estimativa de investimento.", "free": True},
         {"step": 4, "name": "Demo gratuita do MVP", "description": "7 dias de acesso ao workspace, sem cartao, sem compromisso.", "free": True},
-        {"step": 5, "name": "Decisao", "description": "Seguir individualmente, formar cooperativa, ou recomecar.", "free": True},
+        {"step": 5, "name": "Decisao", "description": "Seguir com a implementacao ou recomecar.", "free": True},
         {"step": 6, "name": "Criacao do sistema", "description": "Equipe de engenheiros e especialistas constroem seu sistema.", "free": False},
         {"step": 7, "name": "Suporte e evolucao", "description": "Plano mensal de suporte com evolucao continua.", "free": False},
     ],
 }
 
-COOPERATIVE_MODEL = {
-    "name": "Modelo Cooperativo",
-    "description": "Grupos de centros automotivos compartilham o custo de desenvolvimento, reduzindo significativamente o investimento individual. Quanto mais membros, maior o desconto. Valores definidos na consulta.",
-    "max_members": 10,
-    "rules": [
-        "Funcionalidades core sao compartilhadas entre o grupo",
-        "Funcionalidades exclusivas sao add-on pago",
-        "Cada membro mantem seus dados isolados",
-        "Desconto aplicado sobre a mensalidade por membro",
+PARTNER_PROGRAM = {
+    "name": "Programa de Parcerias",
+    "description": "Programa de indicacao para quem atua no universo automotivo. Voce indica centros automotivos para a Pitcore e ganha comissao por cada cliente fechado. Sem necessidade de vender ou dar suporte — a Pitcore cuida de tudo.",
+    "how_it_works": [
+        "Cadastre-se como parceiro no portal (pitcore.online/parceiros)",
+        "Receba seu cupom exclusivo de parceiro",
+        "Compartilhe com donos de centros automotivos da sua rede",
+        "Acompanhe suas indicacoes pelo painel do parceiro",
+        "Receba comissao quando o cliente fechar (D+7 apos pagamento)",
+    ],
+    "commissions": {
+        "agent": {
+            "on_acceptance": "R$ 50 (quando o cliente aceita a especificacao)",
+            "on_first_payment": "R$ 250 (quando o cliente paga a primeira mensalidade)",
+            "total": "R$ 300 por indicacao de Agente de IA",
+        },
+        "system": {
+            "on_acceptance": "R$ 100 (quando o cliente aceita a especificacao)",
+            "on_first_payment": "R$ 900 (quando o cliente paga a primeira mensalidade)",
+            "total": "R$ 1.000 por indicacao de Sistema Sob Medida",
+        },
+    },
+    "who_can_be_partner": [
+        "Vendedores e distribuidores de autopecas",
+        "Fornecedores de ferramentas e equipamentos",
+        "Distribuidores de tintas e insumos automotivos",
+        "Consultores e prestadores de servico para oficinas",
+        "Agencias de marketing que atendem o setor automotivo",
+    ],
+    "partner_resources": [
+        "Link/cupom exclusivo para rastreamento",
+        "Scripts de abordagem por WhatsApp",
+        "Pagina de diagnostico para o cliente",
+        "Material de apresentacao (PDF)",
+        "Suporte dedicado ao parceiro",
+    ],
+    "important_rules": [
+        "Parceiro nao pode ganhar comissao em projetos proprios",
+        "Comissao apenas para indicacoes de terceiros",
+        "Indicacoes verificadas contra fraude",
     ],
 }
 
 MONETIZE_PROGRAM = {
     "name": "Programa Monetize seu Sistema",
-    "description": "Transforme o sistema que voce construiu com a Pitcore em uma solucao comercializavel para outros centros automotivos.",
-    "revenue_share": "Percentuais definidos contratualmente na consulta com especialista.",
+    "description": "Transforme o sistema que voce construiu com a Pitcore em uma solucao comercializavel para outros centros automotivos. Voce fica com 70% da receita, a Pitcore cuida de toda a parte tecnica.",
+    "revenue_share": "Parceiro recebe 70%, Pitcore recebe 30%. Percentuais definidos contratualmente antes da comercializacao.",
     "eligibility_criteria": [
         "Resultados mensuraveis e documentados",
         "Arquitetura modular que permite replicacao",
@@ -155,11 +186,15 @@ MONETIZE_PROGRAM = {
         "Comercializacao conjunta — disponivel no ecossistema Pitcore",
     ],
     "pitcore_handles": [
-        "Implementacao",
-        "Infraestrutura",
-        "Suporte",
-        "Atualizacoes",
-        "Evolucao tecnica",
+        "Implementacao para novos clientes",
+        "Infraestrutura (hospedagem, seguranca, backups, monitoramento)",
+        "Suporte tecnico e ao cliente",
+        "Atualizacoes e evolucao tecnica",
+    ],
+    "partner_benefits": [
+        "Nova fonte de receita recorrente a partir de um ativo que voce ja tem",
+        "Posicionamento como referencia em tecnologia no setor",
+        "Escala sem precisar de equipe tecnica — a Pitcore cuida de tudo",
     ],
     "disclaimers": [
         "Nao e modelo de investimento",
@@ -248,21 +283,37 @@ def get_knowledge_base_text() -> str:
         lines.append(f"  {step['step']}. {step['name']}{free_tag} — {step['description']}")
     lines.append("")
 
-    # Cooperative
-    lines.append("## MODELO COOPERATIVO\n")
-    c = COOPERATIVE_MODEL
-    lines.append(c["description"])
-    lines.append(f"Maximo de membros: {c['max_members']}")
+    # Partner Program
+    lines.append("## PROGRAMA DE PARCERIAS\n")
+    p = PARTNER_PROGRAM
+    lines.append(p["description"])
+    lines.append("\nComo funciona:")
+    for i, step in enumerate(p["how_it_works"], 1):
+        lines.append(f"  {i}. {step}")
+    lines.append("\nComissoes:")
+    lines.append(f"  - Agente de IA: {p['commissions']['agent']['total']}")
+    lines.append(f"    ({p['commissions']['agent']['on_acceptance']} + {p['commissions']['agent']['on_first_payment']})")
+    lines.append(f"  - Sistema Sob Medida: {p['commissions']['system']['total']}")
+    lines.append(f"    ({p['commissions']['system']['on_acceptance']} + {p['commissions']['system']['on_first_payment']})")
+    lines.append("\nQuem pode ser parceiro:")
+    for who in p["who_can_be_partner"]:
+        lines.append(f"  - {who}")
     lines.append("")
 
     # Monetize
     lines.append("## PROGRAMA MONETIZE SEU SISTEMA\n")
     m = MONETIZE_PROGRAM
     lines.append(m["description"])
-    lines.append(f"Participacao: {m['revenue_share']}")
-    lines.append("Criterios de elegibilidade:")
+    lines.append(f"\nParticipacao: {m['revenue_share']}")
+    lines.append("\nBeneficios para o parceiro:")
+    for ben in m["partner_benefits"]:
+        lines.append(f"  - {ben}")
+    lines.append("\nCriterios de elegibilidade:")
     for cr in m["eligibility_criteria"]:
         lines.append(f"  - {cr}")
+    lines.append("\nO que a Pitcore assume:")
+    for h in m["pitcore_handles"]:
+        lines.append(f"  - {h}")
     lines.append("")
 
     # Specialties

@@ -14,7 +14,7 @@ class LeadInfo(BaseModel):
     employees: int | None = None
     monthly_orders: int | None = None
     main_pain: str | None = None
-    interest: str | None = None  # "agent_overlay", "build", "cooperative", "monetize"
+    interest: str | None = None  # "agent_overlay", "build", "partnership", "monetize"
     recommended_package: str | None = None
     conversation_id: str | None = None
     channel: str | None = None
